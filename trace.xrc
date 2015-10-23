@@ -3,7 +3,7 @@
     <object class="wxFrame" name="MainFrame">
         <style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
         <size>848,600</size>
-        <title>ProdLineManager</title>
+        <title>Head Line Traceability</title>
         <object class="wxPanel" name="DemoPanel">
             <style>wxTAB_TRAVERSAL</style>
             <object class="wxBoxSizer">
@@ -33,7 +33,7 @@
                                         <flag>wxALIGN_LEFT|wxALIGN_TOP|wxALL</flag>
                                         <border>5</border>
                                         <object class="wxStaticText" name="mainValue0">
-                                            <label>ProdLineTrace Overview</label>
+                                            <label>HLTrace Overview</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -129,20 +129,6 @@
                                         <border>5</border>
                                         <object class="wxStaticText" name="valueMainPollDBSleep">
                                             <label>Poll DB Sleep</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_LEFT|wxALIGN_TOP|wxALL</flag>
-                                        <border>5</border>
-                                        <object class="wxStaticText" name="labelMainPCReadyResetOnPoll">
-                                            <label>Reset PC Ready Flag On Poll</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_LEFT|wxALIGN_TOP|wxALL</flag>
-                                        <border>5</border>
-                                        <object class="wxStaticText" name="valueMainPCReadyResetOnPoll">
-                                            <label>Reset PC Ready Flag On Poll</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">

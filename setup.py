@@ -2,6 +2,8 @@ import sys
 import os
 from cx_Freeze import setup, Executable
 import traceability
+import sys
+sys.setrecursionlimit(10000) 
 
 PROJECT_ROOT, _ = os.path.split(__file__)
 VERSION = traceability.__version__
@@ -9,14 +11,14 @@ PROJECT_NAME = traceability.NAME
 PROJECT_AUTHORS = traceability.AUTHOR
 # Please see readme.rst for a complete list of contributors
 PROJECT_EMAILS = traceability.EMAIL
-PROJECT_URL = "https://bitbucket.org/wilkpio/prodlinetrace"
+PROJECT_URL = "https://bitbucket.org/wilkpio/hltrace"
 SHORT_DESCRIPTION = 'Traceability application for PLC based production line.'
+ICON = "trace.ico"
 
 try:
     DESCRIPTION = open(os.path.join(PROJECT_ROOT, "README.rst")).read()
 except IOError:
     DESCRIPTION = SHORT_DESCRIPTION
-
 
 hidden_imports = [
                 "flask",
@@ -135,23 +137,40 @@ hidden_imports = [
                 "werkzeug.http",
 ]
 
-zip_includes = [
+excludes = [    "tkinter", 
+                "werkzeug.http.os",
+                "werkzeug.http.sys", 
+                "werkzeug.http._sre", 
+                "werkzeug.http.array", 
+                "werkzeug.http._locale",
+                "werkzeug.http._warnings",  
+                "werkzeug.http.errno", 
+                "werkzeug.http.nt",
+                "werkzeug.http.strop",
+]
+
+includes = [    "traceability", 
+                "flask", 
+                #"werkzeug.http",
 ]
 
 include_files = [
-                "prodLineTrace.conf",
-                "prodLineTrace.ico",
+                "trace.conf",
+                ICON,
                 "dll/snap7.dll",
-                "prodLineTrace.xrc",
+                "trace.xrc",
                 ("tool/sqlitebrowser.exe", "sqlitebrowser.exe"),
                 ("tool/clientdemo.exe", "clientdemo.exe"),
- ]
+]
+
+zip_includes = [
+]
 
 # Dependencies are automatically detected, but it might need fine tuning.
 build_exe_options = {
                      "packages": hidden_imports,
-                     "excludes": ["tkinter", "werkzeug.http.os", "werkzeug.http.sys", "werkzeug.http._sre", "werkzeug.http.array", "werkzeug.http._locale", "werkzeug.http._warnings"],
-                     "includes":["plc", "flask"],
+                     "excludes": excludes,
+                     "includes": includes,
                      "include_files": include_files,
                      'include_msvcr': True,
                      'zip_includes': zip_includes,
@@ -159,17 +178,17 @@ build_exe_options = {
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
 icon_table = [
-    ('prodLineTrace.ico', open('prodLineTrace.ico', 'rb').read()),
+    (ICON, open(ICON, 'rb').read()),
 ]
 
 shortcut_table = [(
          "DesktopShortcut",        # Shortcut
          "DesktopFolder",          # Directory_
-         "ProdLineTrace",           # Name
+         PROJECT_NAME,             # Name
          "TARGETDIR",              # Component_
-         "[TARGETDIR]prodLineTrace.exe",# Target
+         "[TARGETDIR]hltrace.exe",   # Target
          None,                     # Arguments
-         SHORT_DESCRIPTION,                     # Description
+         SHORT_DESCRIPTION,        # Description
          None,                     # Hotkey
          None,                     # Icon
          None,                     # IconIndex
@@ -202,14 +221,14 @@ setup(
     },
     executables=[
         Executable(
-            "prodLineTrace.py",
+            script="trace.py",
             base=base,
-            icon='prodLineTrace.ico',
+            icon=ICON,
         ),
         Executable(
-            "prodLineTraceCLI.py",
+            script="traceCLI.py",
             base=base,
-            icon='prodLineTrace.ico',
+            icon=ICON,
         )
     ]
 )

@@ -1,10 +1,10 @@
 """
-The PLC Python library.
+The Traceability Python library.
 """
-__version__ = '0.4.0'
+__version__ = '1.0.1'
 AUTHOR = "Piotr Wilkosz"
 EMAIL = "Piotr.Wilkosz@gmail.com"
-NAME = "ProdLineTrace"
+NAME = "HLTrace"
 
 import logging
 import tempfile
@@ -21,7 +21,7 @@ _config = {}
 try:
     _config['dbfile'] = parse_config(_opts.config)['main']['dbfile'][0]
 except Exception, e:
-    _config['dbfile'] = tempfile.gettempdir() + os.sep + 'plc_temp.sqlite'
+    _config['dbfile'] = tempfile.gettempdir() + os.sep + 'trace_temp.sqlite'
 
 db_connection_string = SQLALCHEMY_DATABASE_URI_PREFIX + _config['dbfile']
 
@@ -29,5 +29,5 @@ _app = Flask(__name__)
 _app.config['SQLALCHEMY_DATABASE_URI'] = db_connection_string
 db = SQLAlchemy(_app)
 
-if not _config['dbfile'].endswith("plc_temp.sqlite"):
+if not _config['dbfile'].endswith("trace_temp.sqlite"):
     db.create_all()

@@ -65,14 +65,14 @@ def file_name_with_size(filename, separator="  =>  "):
     else:
         return filename
 
-
+'''
 def get_product_id(_type, _serial):
     """
     returns product id based on product_type and serial_number.
     It is used within Product table.
     """
     return pow(10, 8) * _type + _serial
-
+'''
 
 def offset_spec_block(spec_block, offset=0):
     """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -v -i
 import wx
 from wx import xrc
 from wx.lib.delayedresult import startWorker
@@ -10,9 +10,9 @@ import sys
 from pygtail import Pygtail
 import traceback
 
-from traceability import helpers
 from traceability import __version__ as version
 from traceability.models import __version__ as dbmodel_version
+from traceability.helpers import parse_args, parse_config
 from traceability.prodline import ProdLine
 from traceability.util import file_name_with_size
 
@@ -24,7 +24,7 @@ class MainWindow(wx.App):
     ID_UPDATE_LOG = wx.NewId()
 
     def OnInit(self):
-        res = xrc.XmlResource("prodLineTrace.xrc")
+        res = xrc.XmlResource("trace.xrc")
         frame = res.LoadFrame(None, 'MainFrame')
         frame.Show()
 
@@ -41,7 +41,6 @@ class MainWindow(wx.App):
         self.valueMainBaseUrl = xrc.XRCCTRL(frame, "valueMainBaseUrl")
         self.valueMainPollSleep = xrc.XRCCTRL(frame, "valueMainPollSleep")
         self.valueMainPollDBSleep = xrc.XRCCTRL(frame, "valueMainPollDBSleep")
-        self.valueMainPCReadyResetOnPoll = xrc.XRCCTRL(frame, "valueMainPCReadyResetOnPoll")
 
         self.valueMainControllerCount = xrc.XRCCTRL(frame, "valueMainControllerCount")
         self.valueMainMsgRead = xrc.XRCCTRL(frame, "valueMainMsgRead")
@@ -64,7 +63,7 @@ class MainWindow(wx.App):
 
         self.application = ProdLine(sys.argv)
         self._opts = self.application._opts
-        self._config = helpers.parse_config(self._opts.config)
+        self._config = parse_config(self._opts.config)
 #        self.webapp = webapp
         self.dbfile = self._config['main']['dbfile'][0]
         self.logfile = self._config['main']['logfile'][0]
@@ -121,7 +120,6 @@ class MainWindow(wx.App):
         self.valueMainBaseUrl.SetLabelText(str(self.baseUrl))
         self.valueMainPollSleep.SetLabelText(str(self.pollSleep))
         self.valueMainPollDBSleep.SetLabelText(str(self.pollDbSleep))
-        self.valueMainPCReadyResetOnPoll.SetLabelText(str(self.pcReadyFlagOnPoll))
 
         while True:
             self.valueMainLogFile.SetLabelText(file_name_with_size(self.logfile))
@@ -192,7 +190,7 @@ class MainWindow(wx.App):
         self.Close(True)
 
 if __name__ == "__main__":
-    _opts, _args = helpers.parse_args()
+    _opts, _args = parse_args()
     app = MainWindow(redirect=True, filename=os.devnull)
 
     # update status bar

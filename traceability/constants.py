@@ -1,29 +1,32 @@
-PC_READY_FLAG           = 'body.PC_Ready'
-PLC_QUERY_FLAG          = 'body.PLC_Query'
-PLC_SAVE_FLAG           = 'body.PLC_Save'
-DB_BUSY_FLAG            = 'body.DB_Busy'
-PC_OPEN_BROWSER_FLAG    = 'body.PC_OpenBrowser'
-OPERATOR_QUERY_FLAG     = 'body.Operator_Query'
-OPERATOR_SAVE_FLAG      = 'body.Operator_Save'
-
-OPERATOR_NUMBER         = 'body.Operator_number'  # int
-OPERATOR_STATUS         = 'body.Operator_status'  # byte
-STATION_NUMBER          = 'body.station_number'  # byte
-STATION_STATUS          = 'body.station_status'  # byte
-
 STATION_ID              = 'head.station_id'      # byte
 SERIAL_NUMBER           = 'head.serial_number'   # string(8) - 6 digits
 PRODUCT_TYPE            = 'head.product_type'    # string(12) - 10 digits
-DATE_TIME               = 'head.date_time'       # 8 bytes
-WEEK_NUMBER             = 'head.week_number'     # string(4) - 2 digits
-YEAR_NUMBER             = 'head.year_number'     # string(4) - 2 digits
+PROGRAM_NUMBER          = 'head.program_number'  # integer
+PROGRAM_NAME            = 'head.program_name'    # string(20)
+
+# operator section
+OPERATOR_QUERY_FLAG     = 'body.Operator_Query'
+OPERATOR_SAVE_FLAG      = 'body.Operator_Save'
+OPERATOR_NUMBER         = 'body.Operator_number'  # int
+OPERATOR_STATUS         = 'body.Operator_status'  # byte
 
 PC_HEARTBEAT_FLAG       = 'ctrl.PC_live'
 PLC_HEARTBEAT_FLAG      = 'ctrl.PLC_live'
 PLC_TRC_ON              = 'ctrl.PLC_trc_on'
+CHECKSUM                = 'ctrl.checksum'
+
+PC_READY_FLAG           = 'status.PC_Ready'
+PLC_QUERY_FLAG          = 'status.PLC_Query'
+PLC_SAVE_FLAG           = 'status.PLC_Save'
+DB_BUSY_FLAG            = 'status.DB_Busy'
+PC_OPEN_BROWSER_FLAG    = 'status.PC_OpenBrowser'
+STATION_NUMBER          = 'status.station_number'  # byte
+STATION_STATUS          = 'status.station_status'  # byte
+DATE_TIME               = 'status.date_time'       # 8 bytes
 
 TRC_TMPL_COUNT          = 'body.trc.template_count'
 TRC_TMPL_SAVE_FLAG      = 'body.trc.tmpl.__no__.PLC_Save'
+TRC_TMPL_PROGRAM_ID     = 'body.trc.tmpl.__no__.program_id'
 
 SQLALCHEMY_DATABASE_URI_PREFIX = 'sqlite:///'
 

@@ -261,30 +261,13 @@ class ProdLine(ProdLineBase):
         self.test_time_get()
 
     def poll(self):
-        self.pollStatus()
-        self.pollOperations()
-
-    def pollStatus(self):
         for plc in self.plcs:
             for dbid in plc.get_active_datablock_list():
-                if dbid != 300:
-                    continue
                 try:
                     plc.poll_db(dbid)
                 except snap7.snap7exceptions.Snap7Exception:
                     logging.critical("Connection to {plc} lost. Trying to re-establish connection.".format(plc=plc))
                     plc.connect()
-
-    def pollOperations(self):
-        for ctrl in self.plcs:
-            for dbid in ctrl.get_active_datablock_list():
-                if dbid == 300:
-                    continue
-                try:
-                    ctrl.poll_db(dbid)
-                except snap7.snap7exceptions.Snap7Exception:
-                    logging.critical("Connection to {plc} lost. Trying to re-establish connection.".format(plc=ctrl))
-                    ctrl.connect()
 
     def run(self, times=10):
         """"
@@ -316,24 +299,6 @@ class ProdLine(ProdLineBase):
                 self.sync_plcs_time_if_needed()
             # change the value of PC heartbeat flag (every 100ms by default)
             self.pc_heartbeat()
-
-        return True
-
-    def runStatusProcessor(self):
-        """
-            Process db300 statuses in infinite loop.
-        """
-        while True:
-            self.pollStatus()
-
-        return True
-
-    def runOperationProcessor(self):
-        """
-            Process assembly operations in infinite loop.
-        """
-        while True:
-            self.pollOperations()
 
         return True
 
