@@ -10,7 +10,7 @@ from flask.ext.login import UserMixin
 from . import db
 logger = logging.getLogger(__name__)
 
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
 
 class User(UserMixin, db.Model):
@@ -299,7 +299,7 @@ class Operation_Status(db.Model):
 
     status = db.relationship('Status', lazy='dynamic', backref='status_name', foreign_keys='Status.status')
 
-    def __init__(self, ident, name="Default Operation Status", description="Default Operation Status Description", unit_id=0):
+    def __init__(self, ident, name="Default Operation Status", description="Default Operation Status Description", unit_id=None):
         self.id = ident
         self.name = name
         self.description = description

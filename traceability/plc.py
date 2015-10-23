@@ -504,7 +504,7 @@ class PLC(PLCBase):
                 pc_save_flag_name = TRC_TMPL_SAVE_FLAG.replace("__no__", str(template_number))
                 operation_status_name = "body.trc.tmpl.__no__.operation_status".replace("__no__", str(template_number))
                 operation_type_name = "body.trc.tmpl.__no__.operation_type".replace("__no__", str(template_number))
-                program_id = "body.trc.tmpl.__no__.program_id".replace("__no__", str(template_number))
+                program_id_name = "body.trc.tmpl.__no__.program_id".replace("__no__", str(template_number))
                 date_time_name = "body.trc.tmpl.__no__.date_time".replace("__no__", str(template_number))
 
                 result_1_name = "body.trc.tmpl.__no__.1.result".replace("__no__", str(template_number))
@@ -543,11 +543,11 @@ class PLC(PLCBase):
                         logger.error("PLC: {plc} DB: {db} Data read error. Input: {data} Exception: {e}, TB: {tb}".format(plc=self.id, db=dbid, data=data, e=e, tb=traceback.format_exc()))
                         station_id = 0
                     try:
-                        data = block[PROGRAM_NAME]
-                        program_name = str(data)
+                        data = block[program_id_name]
+                        program_id = str(data)
                     except ValueError, e:
                         logger.warning("PLC: {plc} DB: {db} wrong value for program name, returning 0. Exception: {e}".format(plc=self.id, db=block.get_db_number(), e=e))
-                        program_name = 0
+                        program_id = 0
 
                     # read specific data
                     operation_status = block.__getitem__(operation_status_name)

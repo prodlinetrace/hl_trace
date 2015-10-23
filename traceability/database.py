@@ -3,8 +3,6 @@ import logging
 from datetime import datetime
 from . import db
 from .models import *
-#from .models import Status, Operation, Product, Operation_Type, Operation_Status, Station, Comment
-#from .models.Product import calculate_product_id
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +52,7 @@ class Database(object):
         product_id = Product.calculate_product_id(product_type, serial_number)
         station = int(station)
         status = int(status)
-        program_id = int(program_id)
+        program_id = str(program_id)
         operator = int(operator)
         date_time = str(date_time)
         logger.info("CON: {dbcon} PT: {product_type} SN: {serial_number} ST: {station} STATUS: {status} PROGRAM: {program_id} OP: {operator} DT: {date_time}. Saving status record.".format(dbcon=self.name, product_type=product_type, serial_number=serial_number, station=station, status=status, program_id=program_id, operator=operator, date_time=date_time))
@@ -62,13 +60,14 @@ class Database(object):
         self.add_product_if_required(product_type, serial_number, program_id)
         self.add_station_if_required(station)
         self.add_operation_status_if_required(status)  # status and operation status names are kept in one and same table
+        self.add_operator_if_required(operator)  # add / operator / user if required.
         self.add_status(status, product_id, station, operator, date_time)
 
     def write_operation(self, product_type, serial_number, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status):
         product_type = str(product_type)
         serial_number = str(serial_number)
         product_id = Product.calculate_product_id(product_type, serial_number)
-        program_id = int(program_id) 
+        program_id = str(program_id) 
         station_id = int(station_id)
 
         self.add_product_if_required(product_type, serial_number, program_id)
@@ -77,6 +76,7 @@ class Database(object):
         self.add_operation_status_if_required(result_1_status)
         self.add_operation_status_if_required(result_2_status)
         self.add_operation_type_if_required(operation_type)
+        self.add_program_if_required(program_id)
         self.add_operation(product_id, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status)
 
     def add_operation(self, product_id, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status):
@@ -190,6 +190,42 @@ class Database(object):
                 except sqlalchemy.exc.IntegrityError, e:
                     logger.error("CON: {dbcon} {rep} : {err}".format(dbcon=self.name, rep=repr(e), err=e.__str__()))
                 logger.info("CON: {dbcon} Adding new Operation_Status to database: {operation_status}".format(dbcon=self.name, operation_status=str(new_operation_status)))
+
+        except sqlalchemy.exc.OperationalError, e:
+            logger.error("CON: {dbcon} Database: {dbfile} is locked. Error: {err}".format(dbcon=self.name, dbfile=db.get_app().config['SQLALCHEMY_DATABASE_URI'], err=e.__str__()))
+            return False
+        return True
+
+    def add_operator_if_required(self, operator):
+        operator = int(operator)
+        try:
+            user = User.query.filter_by(id=int(operator)).first()
+            if user is None:  # add new user if required (should not happen often)
+                new_user = User(id=operator, login="{operator}".format(operator=operator), name="New Operator #{id}".format(id=operator), is_admin=False, is_operator=False)
+                db.session.add(new_user)
+                try:
+                    db.session.commit()
+                except sqlalchemy.exc.IntegrityError, e:
+                    logger.error("CON: {dbcon} {rep} : {err}".format(dbcon=self.name, rep=repr(e), err=e.__str__()))
+                logger.info("CON: {dbcon} Adding new User (operator) to database: {user}".format(dbcon=self.name, user=str(user)))
+
+        except sqlalchemy.exc.OperationalError, e:
+            logger.error("CON: {dbcon} Database: {dbfile} is locked. Error: {err}".format(dbcon=self.name, dbfile=db.get_app().config['SQLALCHEMY_DATABASE_URI'], err=e.__str__()))
+            return False
+        return True
+
+    def add_program_if_required(self, program):
+        program = str(program)
+        try:
+            _program = Program.query.filter_by(id=str(program)).first()
+            if _program is None:  # add new user if required (should not happen often)
+                new_program = Program(ident=program, name="New Program #{id}".format(id=program))
+                db.session.add(new_program)
+                try:
+                    db.session.commit()
+                except sqlalchemy.exc.IntegrityError, e:
+                    logger.error("CON: {dbcon} {rep} : {err}".format(dbcon=self.name, rep=repr(e), err=e.__str__()))
+                logger.info("CON: {dbcon} Adding new Program to database: {program}".format(dbcon=self.name, program=str(program)))
 
         except sqlalchemy.exc.OperationalError, e:
             logger.error("CON: {dbcon} Database: {dbfile} is locked. Error: {err}".format(dbcon=self.name, dbfile=db.get_app().config['SQLALCHEMY_DATABASE_URI'], err=e.__str__()))
