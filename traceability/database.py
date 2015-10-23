@@ -48,12 +48,14 @@ class Database(object):
         logger.error("CON: {dbcon} I should never get here...".format(dbcon=self.name))
         return 0
 
-    def write_status(self, product_type, serial_number, station, status, week_number=48, year_number=15, operator=0, date_time=datetime.now()):
-        product_type = int(product_type)
-        serial_number = int(serial_number)
-        product_id = get_product_id(product_type, serial_number)
+    def write_status(self, product_type, serial_number, station, status, program_id, operator=0, date_time=datetime.now()):
+        product_type = str(product_type)
+        serial_number = str(serial_number)
+        product_id = Product.calculate_product_id(product_type, serial_number)
         station = int(station)
         status = int(status)
+        program_id = int(program_id)
+        operator = int(operator)
         date_time = str(date_time)
         logger.info("CON: {dbcon} PT: {product_type} SN: {serial_number} ST: {station} STATUS: {status} PROGRAM: {program_id} OP: {operator} DT: {date_time}. Saving status record.".format(dbcon=self.name, product_type=product_type, serial_number=serial_number, station=station, status=status, program_id=program_id, operator=operator, date_time=date_time))
 
@@ -66,7 +68,7 @@ class Database(object):
         product_type = str(product_type)
         serial_number = str(serial_number)
         product_id = Product.calculate_product_id(product_type, serial_number)
-        program_id = str(program_id) 
+        program_id = int(program_id) 
         station_id = int(station_id)
 
         self.add_product_if_required(product_type, serial_number, program_id)
@@ -75,7 +77,7 @@ class Database(object):
         self.add_operation_status_if_required(result_1_status)
         self.add_operation_status_if_required(result_2_status)
         self.add_operation_type_if_required(operation_type)
-        self.add_operation(product_id, station_id, operation_status, operation_type, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status)
+        self.add_operation(product_id, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status)
 
     def add_operation(self, product_id, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status):
         if date_time is None:
@@ -97,7 +99,7 @@ class Database(object):
 
     def add_status(self, status, product, station, operator, date_time=None):
         status = int(status)
-        product = int(product)
+        product = str(product)
         station = int(station)
         operator = int(operator)
         if date_time is None:
@@ -123,9 +125,9 @@ class Database(object):
         program_id = str(program_id)
 
         try:
-            _product = Product.query.filter_by(type=int(product_type)).filter_by(serial=int(serial_number)).first()
+            _product = Product.query.filter_by(type=str(product_type)).filter_by(serial=str(serial_number)).first()
             if _product is None:  # add item if not exists yet.
-                new_prod = Product(product_type, serial_number, program_id)
+                new_prod = Product(serial=serial_number, prodtype=product_type, program=program_id)
                 db.session.add(new_prod)
                 try:
                     db.session.commit()
@@ -143,13 +145,13 @@ class Database(object):
         try:
             _station = Station.query.filter_by(id=int(station)).first()
             if _station is None:  # add new station if required (should not happen often)
-                new_station = Station(id=station, name=station)
+                new_station = Station(ident=station, name=station)
                 db.session.add(new_station)
                 try:
                     db.session.commit()
                 except sqlalchemy.exc.IntegrityError, e:
                     logger.error("CON: {dbcon} {rep} : {err}".format(dbcon=self.name, rep=repr(e), err=e.__str__()))
-                logger.info("CON: {dbcon} Adding new Station to database: {station}".format(station=str(new_station)))
+                logger.info("CON: {dbcon} Adding new Station to database: {station}".format(dbcon=self.name, station=str(new_station)))
 
         except sqlalchemy.exc.OperationalError, e:
             logger.error("CON: {dbcon} Database: {dbfile} is locked. Error: {err}".format(dbcon=self.name, dbfile=db.get_app().config['SQLALCHEMY_DATABASE_URI'], err=e.__str__()))
@@ -162,13 +164,13 @@ class Database(object):
         try:
             _operation_type = Operation_Type.query.filter_by(id=int(operation_type)).first()
             if _operation_type is None:  # add new operation_type if required (should not happen often)
-                new_operation_type = Operation_Type(id=operation_type, name=operation_type)
+                new_operation_type = Operation_Type(ident=operation_type, name=operation_type)
                 db.session.add(new_operation_type)
                 try:
                     db.session.commit()
                 except sqlalchemy.exc.IntegrityError, e:
                     logger.error("CON: {dbcon} {rep} : {err}".format(dbcon=self.name, rep=repr(e), err=e.__str__()))
-                logger.info("CON: {dbcon} Adding new Operation_Type to database: {operation}".format(operation=str(new_operation_type)))
+                logger.info("CON: {dbcon} Adding new Operation_Type to database: {operation}".format(dbcon=self.name, operation=str(new_operation_type)))
 
         except sqlalchemy.exc.OperationalError, e:
             logger.error("CON: {dbcon} Database: {dbfile} is locked. Error: {err}".format(dbcon=self.name, dbfile=db.get_app().config['SQLALCHEMY_DATABASE_URI'], err=e.__str__()))
@@ -181,13 +183,13 @@ class Database(object):
         try:
             _operation_status = Operation_Status.query.filter_by(id=int(operation_status)).first()
             if _operation_status is None:  # add new operation_status if required (should not happen often)
-                new_operation_status = Operation_Status(id=operation_status, name=operation_status)
+                new_operation_status = Operation_Status(ident=operation_status, name=operation_status)
                 db.session.add(new_operation_status)
                 try:
                     db.session.commit()
                 except sqlalchemy.exc.IntegrityError, e:
                     logger.error("CON: {dbcon} {rep} : {err}".format(dbcon=self.name, rep=repr(e), err=e.__str__()))
-                logger.info("CON: {dbcon} Adding new Operation_Status to database: {operation_status}".format(operation_status=str(new_operation_status)))
+                logger.info("CON: {dbcon} Adding new Operation_Status to database: {operation_status}".format(dbcon=self.name, operation_status=str(new_operation_status)))
 
         except sqlalchemy.exc.OperationalError, e:
             logger.error("CON: {dbcon} Database: {dbfile} is locked. Error: {err}".format(dbcon=self.name, dbfile=db.get_app().config['SQLALCHEMY_DATABASE_URI'], err=e.__str__()))

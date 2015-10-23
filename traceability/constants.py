@@ -5,10 +5,10 @@ PROGRAM_NUMBER          = 'head.program_number'  # integer
 PROGRAM_NAME            = 'head.program_name'    # string(20)
 
 # operator section
-OPERATOR_QUERY_FLAG     = 'body.Operator_Query'
-OPERATOR_SAVE_FLAG      = 'body.Operator_Save'
-OPERATOR_NUMBER         = 'body.Operator_number'  # int
-OPERATOR_STATUS         = 'body.Operator_status'  # byte
+OPERATOR_QUERY_FLAG     = 'operator.operator_Query'
+OPERATOR_SAVE_FLAG      = 'operator.operator_Save'
+OPERATOR_NUMBER         = 'operator.operator_number'  # dint
+OPERATOR_STATUS         = 'operator.operator_status'  # byte
 
 PC_HEARTBEAT_FLAG       = 'ctrl.PC_live'
 PLC_HEARTBEAT_FLAG      = 'ctrl.PLC_live'

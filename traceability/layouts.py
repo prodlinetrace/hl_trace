@@ -5,36 +5,59 @@ from .util import offset_spec_block
 Define layouts of DB blocks on PLC.
 """
 
+
+
 db3xxHeader = """
-0.0    {station_id}                 BYTE        # station_id of given PLC. (0-255 typically: 10, 11, 20, 21, 22, 23, 30, 31)
-2.0    {product_type}               STRING[12]  # product_type from nameplate (10 digits)
-16.0   {serial_number}              STRING[40]  # serial_number from nameplate (6 digits)
-58.0   {program_number}             INT         # Program Number - not used currently. Use {program_name} instead
-60.0   {program_name}               STRING[20]  # Program Name - name or id number of assemby program for given product 
-82.0   {plc_live}                   BOOL        # blinks every 300[ms]. Indicates that PLC is alive.
-82.1   {plc_trc_on}                 BOOL        # traceability flag. used by PLC to indicate if tracaebility should be switched on.
-82.2   ctrl.PLC_reserve_1           BOOL        # not used
-82.3   ctrl.PLC_reserve_2           BOOL        # not used
-82.4   {pc_live}                    BOOL        # Watched by PLC. PC should blink this bit every 300[ms] to notify that application is connected.
-82.5   ctrl.PC_reserve_1            BOOL        # not used
-82.6   {flag_operator_query}        BOOL        # not used
-82.7   {flag_operator_save}         BOOL        # not used
-83.0   ctrl.reserve                 BYTE        # not used
-84.0   {checksum}                   DINT        # control checksum - not used currently
-88.0   {flag_pc_ready}              BOOL        # PC_Ready bit. Monitored by PLC. PCL waits for True. PC sets to False when it starts processing. PC sets back to True once processing is finished.
-88.1   {flag_plc_query}             BOOL        # PLC_Query bit - monitored by PC, set by PLC. PC reads status from database if set to True. Once PC finishes it sets it back to False.
-88.2   {flag_plc_save}              BOOL        # PLC_Save bit - monitored by PC, set by PLC. PC saves status if set to True. Once PC finishes it sets it back to False.
-88.3   {flag_db_busy}               BOOL        # DB_Busy bit - not really used currently.
-88.4   {flag_pc_browser}            BOOL        # PC_OpenBrowser bit - monitored by PC, set by PLC. PC opens new browser tab with product details page if set to True (popups has to be enabled in program configuration). Once done it sets it back to False.
-88.5   status.res_1                 BOOL
-88.6   status.res_2                 BOOL
-88.7   status.res_3                 BOOL
-89.0   status.byte_res_1            BYTE
-90.0   status.byte_res_2            BYTE
-91.0   status.byte_res_3            BYTE
-92.0   {station_number}             BYTE        # station_number - used when reading or saving station status. Value set by PLC when reading/writing status to/from database.
-93.0   {station_status}             BYTE        # station_status - used when reading or saving station status. Value set by PLC when saving status. Value set by PC when reading status from database.
-94.0   {date_time}                  DATETIME    # date and time from PLC. size is 8 bytes.
+0.0     {station_id}                 BYTE        # station_id of given PLC. (0-255 typically: 10, 11, 20, 21, 22, 23, 30, 31)
+2.0     {product_type}               STRING[12]  # product_type from nameplate (10 digits)
+16.0    {serial_number}              STRING[40]  # serial_number from nameplate (6 digits)
+58.0    {program_number}             INT         # Program Number - not used currently. Use {program_name} instead
+60.0    {program_name}               STRING[20]  # Program Name - name or id number of assemby program for given product
+82.0    head.res_1                   DINT        # reserve
+86.0    {plc_live}                   BOOL        # blinks every 300[ms]. Indicates that PLC is alive.
+86.1    {plc_trc_on}                 BOOL        # traceability flag. used by PLC to indicate if tracaebility should be switched on.
+86.2    ctrl.PLC_reserve_1           BOOL        # not used
+86.3    ctrl.PLC_reserve_2           BOOL        # not used
+86.4    {pc_live}                    BOOL        # Watched by PLC. PC should blink this bit every 300[ms] to notify that application is connected.
+86.5    ctrl.PC_reserve_1            BOOL        # not used
+86.6    ctrl.PC_reserve_2            BOOL        # not used
+86.7    ctrl.PC_reserve_3            BOOL        # not used
+87.0    ctrl.reserve                 BYTE        # not used
+88.0    {checksum}                   DINT        # control checksum - not used currently
+92.0    {flag_operator_query}        BOOL
+92.1    {flag_operator_save}         BOOL
+92.2    operator.res_1               BOOL
+92.3    operator.res_2               BOOL
+92.4    operator.res_3               BOOL
+92.5    operator.res_4               BOOL
+92.6    operator.res_5               BOOL
+92.7    operator.res_6               BOOL
+93.0    operator.res_7               BOOL
+93.1    operator.res_8               BOOL
+93.2    operator.res_9               BOOL
+93.3    operator.res_10              BOOL
+93.4    operator.res_11              BOOL
+93.5    operator.res_12              BOOL
+93.6    operator.res_13              BOOL
+93.7    operator.res_14              BOOL
+94.0    operator.operator_status     BYTE
+96.0    operator.operator_number     DINT
+100.0   operator.operator_res_15     DINT
+104.0   {flag_pc_ready}              BOOL        # PC_Ready bit. Monitored by PLC. PCL waits for True. PC sets to False when it starts processing. PC sets back to True once processing is finished.
+104.1   {flag_plc_query}             BOOL        # PLC_Query bit - monitored by PC, set by PLC. PC reads status from database if set to True. Once PC finishes it sets it back to False.
+104.2   {flag_plc_save}              BOOL        # PLC_Save bit - monitored by PC, set by PLC. PC saves status if set to True. Once PC finishes it sets it back to False.
+104.3   {flag_db_busy}               BOOL        # DB_Busy bit - not really used currently.
+104.4   {flag_pc_browser}            BOOL        # PC_OpenBrowser bit - monitored by PC, set by PLC. PC opens new browser tab with product details page if set to True (popups has to be enabled in program configuration). Once done it sets it back to False.
+104.5   status.res_1                 BOOL
+104.6   status.res_2                 BOOL
+104.7   status.res_3                 BOOL
+105.0   status.byte_res_1            BYTE
+106.0   status.byte_res_2            BYTE
+107.0   status.byte_res_3            BYTE
+108.0   status.byte_res_4            BYTE
+112.0   {station_number}             BYTE        # station_number - used when reading or saving station status. Value set by PLC when reading/writing status to/from database.
+113.0   {station_status}             BYTE        # station_status - used when reading or saving station status. Value set by PLC when saving status. Value set by PC when reading status from database.
+114.0   {date_time}                  DATETIME    # date and time from PLC. size is 8 bytes.
 """.format(station_id=STATION_ID, product_type=PRODUCT_TYPE, serial_number=SERIAL_NUMBER, program_number=PROGRAM_NUMBER, program_name=PROGRAM_NAME, \
            plc_live=PLC_HEARTBEAT_FLAG, pc_live=PC_HEARTBEAT_FLAG, plc_trc_on=PLC_TRC_ON, date_time=DATE_TIME, flag_pc_ready=PC_READY_FLAG, \
            flag_plc_query=PLC_QUERY_FLAG, flag_plc_save=PLC_SAVE_FLAG, flag_db_busy=DB_BUSY_FLAG, flag_pc_browser=PC_OPEN_BROWSER_FLAG, \
@@ -94,9 +117,9 @@ db_specs = {
 
 def generate_db_spec(trcTemplateNumber=1):
     tmp_db = db3xxHeader
-    tmp_db += offset_spec_block(db3xxTrcHeader, 102)
+    tmp_db += offset_spec_block(db3xxTrcHeader, 122)
     for i in range(0, trcTemplateNumber):  # append py templates.
-        base_offset = 104
+        base_offset = 124
         block_size = 48
         offset = base_offset + block_size * i
         tmp_db += offset_spec_block(db3xxTrcTemplate, offset).replace("{number}", str(i))
