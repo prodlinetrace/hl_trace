@@ -61,7 +61,8 @@ db3xxHeader = """
 """.format(station_id=STATION_ID, product_type=PRODUCT_TYPE, serial_number=SERIAL_NUMBER, program_number=PROGRAM_NUMBER, program_name=PROGRAM_NAME, \
            plc_live=PLC_HEARTBEAT_FLAG, pc_live=PC_HEARTBEAT_FLAG, plc_trc_on=PLC_TRC_ON, date_time=DATE_TIME, flag_pc_ready=PC_READY_FLAG, \
            flag_plc_query=PLC_QUERY_FLAG, flag_plc_save=PLC_SAVE_FLAG, flag_db_busy=DB_BUSY_FLAG, flag_pc_browser=PC_OPEN_BROWSER_FLAG, \
-           station_number=STATION_NUMBER, station_status=STATION_STATUS, checksum=CHECKSUM, flag_operator_query=OPERATOR_QUERY_FLAG, flag_operator_save=OPERATOR_SAVE_FLAG, operator_status=OPERATOR_STATUS, operator_number=OPERATOR_NUMBER)
+           station_number=STATION_NUMBER, station_status=STATION_STATUS, checksum=CHECKSUM, \
+           flag_operator_query=OPERATOR_QUERY_FLAG, flag_operator_save=OPERATOR_SAVE_FLAG, operator_status=OPERATOR_STATUS, operator_number=OPERATOR_NUMBER)
 
 
 db3xxTrcHeader = """

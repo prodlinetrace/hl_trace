@@ -57,6 +57,7 @@ class Database(object):
         date_time = str(date_time)
         logger.info("CON: {dbcon} PT: {product_type} SN: {serial_number} ST: {station} STATUS: {status} PROGRAM: {program_id} OP: {operator} DT: {date_time}. Saving status record.".format(dbcon=self.name, product_type=product_type, serial_number=serial_number, station=station, status=status, program_id=program_id, operator=operator, date_time=date_time))
 
+        self.add_program_if_required(program_id)
         self.add_product_if_required(product_type, serial_number, program_id)
         self.add_station_if_required(station)
         self.add_operation_status_if_required(status)  # status and operation status names are kept in one and same table
@@ -70,13 +71,13 @@ class Database(object):
         program_id = str(program_id) 
         station_id = int(station_id)
 
+        self.add_program_if_required(program_id)
         self.add_product_if_required(product_type, serial_number, program_id)
         self.add_station_if_required(station_id)
         self.add_operation_status_if_required(operation_status)
         self.add_operation_status_if_required(result_1_status)
         self.add_operation_status_if_required(result_2_status)
         self.add_operation_type_if_required(operation_type)
-        self.add_program_if_required(program_id)
         self.add_operation(product_id, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status)
 
     def add_operation(self, product_id, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status):
@@ -127,7 +128,7 @@ class Database(object):
         try:
             _product = Product.query.filter_by(type=str(product_type)).filter_by(serial=str(serial_number)).first()
             if _product is None:  # add item if not exists yet.
-                new_prod = Product(serial=serial_number, prodtype=product_type, program=program_id)
+                new_prod = Product(serial=serial_number, prodtype=product_type, program_id=program_id)
                 db.session.add(new_prod)
                 try:
                     db.session.commit()

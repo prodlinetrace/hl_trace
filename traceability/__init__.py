@@ -1,7 +1,7 @@
 """
 The Traceability Python library.
 """
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 AUTHOR = "Piotr Wilkosz"
 EMAIL = "Piotr.Wilkosz@gmail.com"
 NAME = "HLTrace"

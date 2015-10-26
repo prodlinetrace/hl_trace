@@ -10,7 +10,7 @@ from flask.ext.login import UserMixin
 from . import db
 logger = logging.getLogger(__name__)
 
-__version__ = '1.3.1'
+__version__ = '1.3.2'
 
 
 class User(UserMixin, db.Model):
@@ -103,20 +103,20 @@ db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.String(30), nullable=False, unique=True, index=True, primary_key=True)
-    type = db.Column(db.String(10), nullable=False, unique=True, index=True, primary_key=True)
-    serial = db.Column(db.String(20), nullable=False, unique=True, index=True, primary_key=True)
-    program = db.Column(db.String(20), nullable=False, unique=False)
+    type = db.Column(db.String(10), nullable=False, index=True)
+    serial = db.Column(db.String(20), nullable=False, index=True)
     date_added = db.Column(db.String(40), index=True)
+    program_id = db.Column(db.String(20), db.ForeignKey('program.id'))
     
     comments = db.relationship('Comment', lazy='dynamic', backref='product')
     statuses = db.relationship('Status', lazy='dynamic', backref='product')
     operations = db.relationship('Operation', lazy='dynamic', backref='product')
 
-    def __init__(self, serial, prodtype='0000000000', program='', date=None):
+    def __init__(self, serial, prodtype='0000000000', program_id='', date=None):
         self.serial = serial
         self.type = prodtype
         self.id = self.get_product_id(self.type, self.serial)
-        self.program = program
+        self.program_id = program_id
         if date is None:
             date = datetime.now()
         self.date_added = str(date)
@@ -348,7 +348,8 @@ class Program(db.Model):
     id = db.Column(db.String(20), primary_key=True)
     name = db.Column(db.String(64))
     description = db.Column(db.String(255))
-    operations = db.relationship('Operation', lazy='dynamic', backref='program')
+    operations = db.relationship('Operation', lazy='dynamic', backref='program', foreign_keys='Operation.program_id')
+    products = db.relationship('Product', lazy='dynamic', backref='program', foreign_keys='Product.program_id')
 
     def __init__(self, ident, name="Default Program Name", description="Default Program Description"):
         self.id = ident
