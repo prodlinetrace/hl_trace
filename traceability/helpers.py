@@ -36,13 +36,11 @@ def parse_config(f):
         for option in config.options(section):
             c[section][option] = map(str.strip, config.get(section, option).split(','))
 
-    # in case program is not installed correctly try to guess better paths
-    for k in ['dbfile', 'logfile', 'templatedir']:
+    # in case program is not installed correctly try create required paths
+    for k in ['dbfile', 'logfile']:
         path = c['main'][k][0]
-        if not os.path.exists(os.path.dirname(path)):  # in case base directory does not exists use d:\
-            if k == 'templatedir':
-                c['main'][k][0] = os.path.join((os.path.dirname(os.path.dirname(__file__))), "plcweb", "templates").replace("\\", "\\\\")
-            else:
-                c['main'][k][0] = "D:\\" + os.path.basename(path)
+        if not os.path.exists(os.path.dirname(path)):  # in case base directory does not exists try to create it
+            os.makedirs(os.path.dirname(path))
+        c['main'][k][0] = path
 
     return c
