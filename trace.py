@@ -107,46 +107,56 @@ class MainWindow(wx.App):
 
     def updateLogWindow(self):
         self._mode = self.ID_UPDATE_LOG
-        while True:
-            for line in Pygtail(self.logfile):
-                self.valueLogTextArea.write(line)
-            time.sleep(0.3)
+        try:
+            while True:
+                for line in Pygtail(self.logfile):
+                    self.valueLogTextArea.write(line)
+                time.sleep(0.3)
+        except Exception, e:
+            logger.critical("Exception: {exc}".format(exc=e))
+            logger.critical("Traceback: {tb}".format(tb=traceback.format_exc()))
+        logger.critical("Log Window updateter has ended unexpected: {error}".format(error=traceback.format_exc()))
 
     def updateControllersStatus(self):
-        self._mode = self.ID_UPDATE_CTRL_STATUS
-        # push some initial data
-        self.valueMainVersion.SetLabelText(version)
-        self.valueMainDBModelVersion.SetLabelText(dbmodel_version)
-        self.valueMainBaseUrl.SetLabelText(str(self.baseUrl))
-        self.valueMainPollSleep.SetLabelText(str(self.pollSleep))
-        self.valueMainPollDBSleep.SetLabelText(str(self.pollDbSleep))
+        try:
+            self._mode = self.ID_UPDATE_CTRL_STATUS
+            # push some initial data
+            self.valueMainVersion.SetLabelText(version)
+            self.valueMainDBModelVersion.SetLabelText(dbmodel_version)
+            self.valueMainBaseUrl.SetLabelText(str(self.baseUrl))
+            self.valueMainPollSleep.SetLabelText(str(self.pollSleep))
+            self.valueMainPollDBSleep.SetLabelText(str(self.pollDbSleep))
 
-        while True:
-            self.valueMainLogFile.SetLabelText(file_name_with_size(self.logfile))
-            self.valueMainConfigFile.SetLabelText(file_name_with_size(self._opts.config))
-            self.valueMainDBFile.SetLabelText(file_name_with_size(self.dbfile))
+            while True:
+                self.valueMainLogFile.SetLabelText(file_name_with_size(self.logfile))
+                self.valueMainConfigFile.SetLabelText(file_name_with_size(self._opts.config))
+                self.valueMainDBFile.SetLabelText(file_name_with_size(self.dbfile))
 
-            self.valueMainStatus.SetLabelText(str(self.application.get_status()))
-            self.valueMainUptime.SetLabelText(str(datetime.datetime.now() - self.starttime))
+                self.valueMainStatus.SetLabelText(str(self.application.get_status()))
+                self.valueMainUptime.SetLabelText(str(datetime.datetime.now() - self.starttime))
 
-            # message statistics
-            self.valueMainControllerCount.SetLabelText(str(len(self.application.plcs)))
-            self.valueMainMsgRead.SetLabelText(str(self.application.get_counter_status_message_read()))
-            self.valueMainMsgWrite.SetLabelText(str(self.application.get_counter_status_message_write()))
-            self.valueMainOperWrite.SetLabelText(str(self.application.get_counter_saved_operations()))
-            self.valueMainDetailsDisplay.SetLabelText(str(self.application.get_counter_product_details_display()))
-            self.valueMainUserRead.SetLabelText(str(self.application.get_counter_operator_status_read()))
+                # message statistics
+                self.valueMainControllerCount.SetLabelText(str(len(self.application.plcs)))
+                self.valueMainMsgRead.SetLabelText(str(self.application.get_counter_status_message_read()))
+                self.valueMainMsgWrite.SetLabelText(str(self.application.get_counter_status_message_write()))
+                self.valueMainOperWrite.SetLabelText(str(self.application.get_counter_saved_operations()))
+                self.valueMainDetailsDisplay.SetLabelText(str(self.application.get_counter_product_details_display()))
+                self.valueMainUserRead.SetLabelText(str(self.application.get_counter_operator_status_read()))
 
-            # update block statistics
-            self.valueMainDBProdCount.SetLabelText(str(self.application.get_product_count()))
-            self.valueMainDBStationCount.SetLabelText(str(self.application.get_station_count()))
-            self.valueMainDBStatusCount.SetLabelText(str(self.application.get_status_count()))
-            self.valueMainDBOperationCount.SetLabelText(str(self.application.get_opertation_count()))
-            self.valueMainDBOperationTypeCount.SetLabelText(str(self.application.get_operation_type_count()))
-            self.valueMainDBStatusTypeCount.SetLabelText(str(self.application.get_status_type_count()))
-            self.valueMainDBCommentCount.SetLabelText(str(self.application.get_comment_count()))
+                # update block statistics
+                self.valueMainDBProdCount.SetLabelText(str(self.application.get_product_count()))
+                self.valueMainDBStationCount.SetLabelText(str(self.application.get_station_count()))
+                self.valueMainDBStatusCount.SetLabelText(str(self.application.get_status_count()))
+                self.valueMainDBOperationCount.SetLabelText(str(self.application.get_opertation_count()))
+                self.valueMainDBOperationTypeCount.SetLabelText(str(self.application.get_operation_type_count()))
+                self.valueMainDBStatusTypeCount.SetLabelText(str(self.application.get_status_type_count()))
+                self.valueMainDBCommentCount.SetLabelText(str(self.application.get_comment_count()))
 
-            time.sleep(0.31234)
+                time.sleep(0.31234)
+        except Exception, e:
+            logger.critical("Exception: {exc}".format(exc=e))
+            logger.critical("Traceback: {tb}".format(tb=traceback.format_exc()))
+        logger.critical("Status Window updateter has ended unexpected: {error}".format(error=traceback.format_exc()))
 
     def mainThread(self):
         """
@@ -195,7 +205,7 @@ if __name__ == "__main__":
 
     # update status bar
     tw = app.GetTopWindow()
-    tw.PushStatusText('starting')
+    tw.PushStatusText('started')
 
     # start the threads
     startWorker(app._ResultNotifier, app.updateLogWindow)
