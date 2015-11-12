@@ -10,7 +10,7 @@ from flask.ext.login import UserMixin
 from . import db
 logger = logging.getLogger(__name__)
 
-__version__ = '1.3.2'
+__version__ = '1.3.4'
 
 
 class User(UserMixin, db.Model):
@@ -107,7 +107,7 @@ class Product(db.Model):
     serial = db.Column(db.String(20), nullable=False, index=True)
     date_added = db.Column(db.String(40), index=True)
     program_id = db.Column(db.String(20), db.ForeignKey('program.id'))
-    
+
     comments = db.relationship('Comment', lazy='dynamic', backref='product')
     statuses = db.relationship('Status', lazy='dynamic', backref='product')
     operations = db.relationship('Operation', lazy='dynamic', backref='product')
@@ -127,7 +127,7 @@ class Product(db.Model):
     @staticmethod
     def calculate_product_id(_type=None, _serial=None):
         return str(_type).zfill(10) + str(_serial).zfill(20)
-    
+
     def get_product_id(self, _type=None, _serial=None):
         """
         returns product id based on product_type and serial_number.
@@ -192,12 +192,14 @@ class Status(db.Model):
     status = db.Column(db.Integer, db.ForeignKey('operation_status.id'))
     date_time = db.Column(db.String(40))
     product_id = db.Column(db.String(30), db.ForeignKey('product.id'))
+    program_id = db.Column(db.String(20), db.ForeignKey('program.id'))
     station_id = db.Column(db.Integer, db.ForeignKey('station.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, status, product, station, user=None, date_time=None):
+    def __init__(self, status, product, program, station, user=None, date_time=None):
         self.status = status
         self.product_id = product
+        self.program_id = program
         self.station_id = station
         self.user_id = user
         if date_time is None:
@@ -205,7 +207,7 @@ class Status(db.Model):
         self.date_time = str(date_time)
 
     def __repr__(self):
-        return '<Status Id: {id} for Product: {product} Station: {station} Status: {status}>'.format(id=self.id, product=self.product_id, station=self.station_id, status=self.status)
+        return '<Status Id: {id} for Product: {product} Program: {program} Station: {station} Status: {status}>'.format(id=self.id, product=self.product_id, program=self.program_id, station=self.station_id, status=self.status)
 
     @property
     def serialize(self):
@@ -214,6 +216,7 @@ class Status(db.Model):
             'id': self.id,
             'status': self.status,
             'product_id': self.product_id,
+            'program_id': self.program_id,
             'station_id': self.station_id,
             'user_id': self.user_id,
             'date_time': self.date_time,
@@ -350,6 +353,7 @@ class Program(db.Model):
     description = db.Column(db.String(255))
     operations = db.relationship('Operation', lazy='dynamic', backref='program', foreign_keys='Operation.program_id')
     products = db.relationship('Product', lazy='dynamic', backref='program', foreign_keys='Product.program_id')
+    statuses = db.relationship('Status', lazy='dynamic', backref='program', foreign_keys='Status.program_id')
 
     def __init__(self, ident, name="Default Program Name", description="Default Program Description"):
         self.id = ident
