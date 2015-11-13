@@ -42,7 +42,7 @@ class Database(object):
             return 1  # this means user is found in DB and has correct operator status
         else:
             logger.warning("CON: {dbcon} OP: {operator} User found in DataBase but is not set as an operator".format(dbcon=self.name, operator=operator))
-            return 2  # this means user is found in DB but does not have operator status 
+            return 2  # this means user is found in DB but does not have operator status
         logger.error("CON: {dbcon} I should never get here...".format(dbcon=self.name))
         return 0
 
@@ -62,13 +62,13 @@ class Database(object):
         self.add_station_if_required(station)
         self.add_operation_status_if_required(status)  # status and operation status names are kept in one and same table
         self.add_operator_if_required(operator)  # add / operator / user if required.
-        self.add_status(status, product_id, station, operator, date_time)
+        self.add_status(status, product_id, program_id, station, operator, date_time)
 
     def write_operation(self, product_type, serial_number, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status):
         product_type = str(product_type)
         serial_number = str(serial_number)
         product_id = Product.calculate_product_id(product_type, serial_number)
-        program_id = str(program_id) 
+        program_id = str(program_id)
         station_id = int(station_id)
 
         self.add_program_if_required(program_id)
@@ -98,16 +98,17 @@ class Database(object):
             return False
         return True
 
-    def add_status(self, status, product, station, operator, date_time=None):
+    def add_status(self, status, product, program, station, operator, date_time=None):
         status = int(status)
         product = str(product)
+        program = str(program)
         station = int(station)
         operator = int(operator)
         if date_time is None:
             date_time = str(date_time)
 
         try:
-            new_status = Status(status, product, station, operator, date_time)
+            new_status = Status(status, product, program, station, operator, date_time)
             db.session.add(new_status)
             try:
                 db.session.commit()
