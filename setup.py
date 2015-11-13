@@ -3,7 +3,7 @@ import os
 from cx_Freeze import setup, Executable
 import traceability
 import sys
-sys.setrecursionlimit(10000) 
+sys.setrecursionlimit(10000)
 
 PROJECT_ROOT, _ = os.path.split(__file__)
 VERSION = traceability.__version__
@@ -137,20 +137,20 @@ hidden_imports = [
                 "werkzeug.http",
 ]
 
-excludes = [    "tkinter", 
+excludes = [    "tkinter",
                 "werkzeug.http.os",
-                "werkzeug.http.sys", 
-                "werkzeug.http._sre", 
-                "werkzeug.http.array", 
+                "werkzeug.http.sys",
+                "werkzeug.http._sre",
+                "werkzeug.http.array",
                 "werkzeug.http._locale",
-                "werkzeug.http._warnings",  
-                "werkzeug.http.errno", 
+                "werkzeug.http._warnings",
+                "werkzeug.http.errno",
                 "werkzeug.http.nt",
                 "werkzeug.http.strop",
 ]
 
-includes = [    "traceability", 
-                "flask", 
+includes = [    "traceability",
+                "flask",
                 #"werkzeug.http",
 ]
 
@@ -186,7 +186,7 @@ shortcut_table = [(
          "DesktopFolder",          # Directory_
          PROJECT_NAME,             # Name
          "TARGETDIR",              # Component_
-         "[TARGETDIR]hltrace.exe",   # Target
+         "[TARGETDIR]trace.exe",   # Target
          None,                     # Arguments
          SHORT_DESCRIPTION,        # Description
          None,                     # Hotkey
@@ -199,7 +199,7 @@ shortcut_table = [(
 msi_data = {"Shortcut": shortcut_table}
 bdist_msi_options = {
     'data': msi_data,
-    'initial_target_dir': r'c:\\%s' % PROJECT_NAME,
+    'initial_target_dir': r'D:\\%s' % PROJECT_NAME,
     'add_to_path': True,
 }
 # GUI applications require a different base on Windows (the default is for a
