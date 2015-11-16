@@ -129,7 +129,7 @@ class Database(object):
         try:
             _product = Product.query.filter_by(type=str(product_type)).filter_by(serial=str(serial_number)).first()
             if _product is None:  # add item if not exists yet.
-                new_prod = Product(serial=serial_number, prodtype=product_type, program_id=program_id)
+                new_prod = Product(serial=serial_number, prodtype=product_type)
                 db.session.add(new_prod)
                 try:
                     db.session.commit()
@@ -268,10 +268,9 @@ class Database(object):
         db.drop_all()
         db.create_all()
         product_type = 1234567899
-        i1 = Product(product_type, 16666, 42, 15)
-        i2 = Product(product_type, 26666, 42, 15)
-        i3 = Product(product_type, 1234, 42, 15)
-        # i4 = Product(16303, "666", "11", "16")
+        i1 = Product(product_type, 16666, 42)
+        i2 = Product(product_type, 26666, 42)
+        i3 = Product(product_type, 1234, 42)
         s10 = Station(10, "192.168.0.10", 102, 0, 2)
         s20 = Station(20, "192.168.0.20", 102, 0, 2)
         s21 = Station(21, "192.168.0.20", 102, 0, 2)
