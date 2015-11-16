@@ -220,8 +220,8 @@ class Database(object):
         program = str(program)
         try:
             _program = Program.query.filter_by(id=str(program)).first()
-            if _program is None:  # add new user if required (should not happen often)
-                new_program = Program(ident=program, name="New Program #{id}".format(id=program))
+            if _program is None:  # add new program if required (should not happen often)
+                new_program = Program(ident=program, name="{id}".format(id=program))
                 db.session.add(new_program)
                 try:
                     db.session.commit()
