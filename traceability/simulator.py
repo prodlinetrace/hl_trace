@@ -156,16 +156,6 @@ class Simulator(PLCBase):
             return False # timeout
         logger.debug("PLC: {plc} DB: {db} SN: {sn} ST: {st} got PLC_MESSAGE_FLAG".format(plc=self.get_id(), db=dbid, sn=serial_number, st=station))
 
-        """
-        # wait for response # check if station status has changed.
-        # TODO: check if this is the right indicator.
-        while True:
-            if db.read_item(STATION_STATUS) != 9:
-                break
-            time.sleep(0.1)
-        _status = db.read_item(STATION_STATUS)
-        """
-
         _status = db.read_item(STATION_STATUS)
         # get the status description
         status = STATION_STATUS_CODES[_status]['result']

@@ -359,6 +359,6 @@ class DB(object):
             #self.read_item(flag)  # this shit shifts db block by 1 !!!!! DO NOT DO IT!!
             block = self.get_parsed_data()
             checkedval = self.__getitem__(flag)
-            logger.info("PLC: {plc} DB: {db} FLAG: {flag} set/checked value: {value}/{checkedval}.".format(plc=self.plc.get_id(), db=self.get_db_number(), flag=flag, value=value, checkedval=checkedval))
+            logger.debug("PLC: {plc} DB: {db} FLAG: {flag} set/checked value: {value}/{checkedval}.".format(plc=self.plc.get_id(), db=self.get_db_number(), flag=flag, value=value, checkedval=checkedval))
             if value != checkedval:
                 logger.warning("PLC: {plc} DB: {db} FLAG: {flag} set/checked value does not match: {value}/{checkedval}.".format(plc=self.plc.get_id(), db=self.get_db_number(), flag=flag, value=value, checkedval=checkedval))
