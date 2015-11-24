@@ -58,7 +58,7 @@ class Database(object):
         logger.info("CON: {dbcon} PT: {product_type} SN: {serial_number} ST: {station} STATUS: {status} PROGRAM: {program_id} OP: {operator} DT: {date_time}. Saving status record.".format(dbcon=self.name, product_type=product_type, serial_number=serial_number, station=station, status=status, program_id=program_id, operator=operator, date_time=date_time))
 
         self.add_program_if_required(program_id)
-        self.add_product_if_required(product_type, serial_number, program_id)
+        self.add_product_if_required(product_type, serial_number)
         self.add_station_if_required(station)
         self.add_operation_status_if_required(status)  # status and operation status names are kept in one and same table
         self.add_operator_if_required(operator)  # add / operator / user if required.
@@ -72,7 +72,7 @@ class Database(object):
         station_id = int(station_id)
 
         self.add_program_if_required(program_id)
-        self.add_product_if_required(product_type, serial_number, program_id)
+        self.add_product_if_required(product_type, serial_number)
         self.add_station_if_required(station_id)
         self.add_operation_status_if_required(operation_status)
         self.add_operation_status_if_required(result_1_status)
@@ -85,7 +85,7 @@ class Database(object):
             date_time = str(date_time)
 
         try:
-            new_operation = Operation(product_id, station_id, operation_status, operation_type, program_id, date_time, result_1, result_1_max, result_1_min, result_1_status, result_2, result_2_max, result_2_min, result_2_status)
+            new_operation = Operation(product=product_id, station=station_id, operation_status_id=operation_status, operation_type_id=operation_type, program_id=program_id, date_time=date_time, r1=result_1, r1_max=result_1_max, r1_min=result_1_min, r1_stat=result_1_status, r2=result_2, r2_max=result_2_max, r2_min=result_2_min, r2_stat=result_2_status)
             db.session.add(new_operation)
             try:
                 db.session.commit()
@@ -108,7 +108,7 @@ class Database(object):
             date_time = str(date_time)
 
         try:
-            new_status = Status(status, product, program, station, operator, date_time)
+            new_status = Status(status=status, product=product, program=program, station=station, user=operator, date_time=date_time)
             db.session.add(new_status)
             try:
                 db.session.commit()
@@ -121,13 +121,13 @@ class Database(object):
             return False
         return True
 
-    def add_product_if_required(self, product_type, serial_number, program_id):
+    def add_product_if_required(self, product_type, serial_number):
         product_type = str(product_type)
         serial_number = str(serial_number)
-        program_id = str(program_id)
+        product_id = Product.calculate_product_id(product_type, serial_number)
 
         try:
-            _product = Product.query.filter_by(type=str(product_type)).filter_by(serial=str(serial_number)).first()
+            _product = Product.query.filter_by(id=str(product_id)).first()
             if _product is None:  # add item if not exists yet.
                 new_prod = Product(serial=serial_number, prodtype=product_type)
                 db.session.add(new_prod)
