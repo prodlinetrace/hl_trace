@@ -128,7 +128,11 @@ class PLCBase(object):
             if self.client.get_connected():
                 logger.info("PLC: {plc} connected to: {ip}:{port}".format(plc=self.id, ip=self.__ip, port=self.__port))
                 # clean pc_ready_flags
-                self.reset_pc_ready_flags()
+                try:
+                    self.reset_pc_ready_flags()
+                except snap7.snap7exceptions.Snap7Exception:
+                    logger.error("PLC: {plc} connection to: {ip}:{port} Failed. Attempt {attempt}/{total}".format(plc=self.id, ip=self.__ip, port=self.__port, attempt=attempt, total=self._reconnect))
+                    self.connect(attempt)
             else:
                 logger.error("PLC: {plc} connection to: {ip}:{port} Failed. Attempt {attempt}/{total}".format(plc=self.id, ip=self.__ip, port=self.__port, attempt=attempt, total=self._reconnect))
                 self.connect(attempt)
