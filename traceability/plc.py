@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PLCBase(object):
 
-    def __init__(self, ip='127.0.0.1', rack=0, slot=2, port=102, reconnect=3):
+    def __init__(self, ip='127.0.0.1', rack=0, slot=2, port=102, reconnect=10):
         self.__ip = ip
         self.__rack = int(rack)
         self.__slot = int(slot)
@@ -122,8 +122,8 @@ class PLCBase(object):
                 self.client.connect(self.__ip, self.__rack, self.__slot, self.__port)
             except snap7.snap7exceptions.Snap7Exception:
                 logger.warning("PLC: {plc} connection to: {ip}:{port} Failed. Attempt: {attempt}/{total}".format(plc=self.__id, ip=self.__ip, port=self.__port, attempt=attempt, total=self._reconnect))
-                self.client.disconnect()
                 sleep(1)
+                self.client.disconnect()
 
             if self.client.get_connected():
                 logger.info("PLC: {plc} connected to: {ip}:{port}".format(plc=self.id, ip=self.__ip, port=self.__port))
@@ -287,7 +287,7 @@ class PLCBase(object):
 
 class PLC(PLCBase):
 
-    def __init__(self, ip='127.0.0.1', rack=0, slot=2, port=102, reconnect=3):
+    def __init__(self, ip='127.0.0.1', rack=0, slot=2, port=102, reconnect=10):
         PLCBase.__init__(self, ip, rack, slot, port, reconnect)
 
     def poll(self):
