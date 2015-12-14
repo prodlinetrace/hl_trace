@@ -105,17 +105,34 @@ class MainWindow(wx.App):
         logger.info("Changing Product Details Popup to: {popup}".format(popup=popup))
         self.application.set_popups(popup)
 
+
     def updateLogWindow(self):
         self._mode = self.ID_UPDATE_LOG
-        try:
-            while True:
+        offset_file = "{logfile}.offset".format(logfile=self.logfile)
+        if os.path.exists(offset_file) and os.path.isfile(offset_file):
+            content = file(offset_file, "r").read()
+            if len(content.split()) < 2:  # less then two lines in a offset file - broken - remove
+                logger.info("offset file is empty: {offset_file}. Trying to remove it. ".format(offset_file=offset_file))
+                time.sleep(1)
+                os.remove(offset_file)
+
+        while True:
+            time.sleep(0.3)
+            try:
                 for line in Pygtail(self.logfile):
                     self.valueLogTextArea.write(line)
-                time.sleep(0.3)
-        except Exception, e:
-            logger.critical("Exception: {exc}".format(exc=e))
-            logger.critical("Traceback: {tb}".format(tb=traceback.format_exc()))
-        logger.critical("Log Window updateter has ended unexpected: {error}".format(error=traceback.format_exc()))
+            except ValueError, e:
+                if os.path.exists(offset_file):
+                    logger.error("Problem with reading offset file: {offset_file}. Trying to remove it. ".format(offset_file=offset_file))
+                    time.sleep(1)
+                    os.remove(offset_file)
+                    if not os.path.exists(offset_file):
+                        logger.info("offset file: {offset_file} removal successful. Restarting update log thread.".format(offset_file=offset_file))
+                        self.updateLogWindow()
+                    else:
+                        logger.fatal("Failed to remove offset file: {offset_file}.".format(offset_file=offset_file))
+        logger.critical("Log Window updater has ended unexpected: {error}".format(error=traceback.format_exc()))
+
 
     def updateControllersStatus(self):
         try:
