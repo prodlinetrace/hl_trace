@@ -322,11 +322,11 @@ class PLC(PLCBase):
             # reset pc_ready flag in case it get's accidentally changed.
             # unsafe - it may cause some race condition in special condition.
             block.set_pc_ready_flag(True)
-        self.read_status(dbid)
+        self.save_operation(dbid)
         self.save_status(dbid)
+        self.read_status(dbid)
         self.show_product_details(dbid)
         self.read_operator_status(dbid)
-        self.save_operation(dbid)
 
         # sleep for configurable amount of time.
         sleep(self._polldbsleep)
