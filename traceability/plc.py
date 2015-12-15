@@ -530,13 +530,13 @@ class PLC(PLCBase):
                     # get some basic data from data block
                     try:
                         data = block[PRODUCT_TYPE]
-                        product_type = str(data)
+                        product_type = int(data)
                     except ValueError, e:
                         logger.error("PLC: {plc} DB: {db} Data read error. Input: {data} Exception: {e}, TB: {tb}".format(plc=self.id, db=dbid, data=data, e=e, tb=traceback.format_exc()))
                         product_type = 0
                     try:
                         data = block[SERIAL_NUMBER]
-                        serial_number = str(data)
+                        serial_number = int(data)
                     except ValueError, e:
                         logger.error("PLC: {plc} DB: {db} Data read error. Input: {data} Exception: {e}, TB: {tb}".format(plc=self.id, db=dbid, data=data, e=e, tb=traceback.format_exc()))
                         serial_number = 0
