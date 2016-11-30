@@ -10,7 +10,7 @@ from flask.ext.login import UserMixin
 from . import db
 logger = logging.getLogger(__name__)
 
-__version__ = '1.3.7'
+__version__ = '1.3.8'
 
 
 class User(UserMixin, db.Model):
@@ -82,7 +82,7 @@ class Comment(db.Model):
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product_id = db.Column(db.String(30), db.ForeignKey('product.id'))
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
