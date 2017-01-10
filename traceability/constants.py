@@ -28,8 +28,6 @@ TRC_TMPL_COUNT          = 'body.trc.template_count'
 TRC_TMPL_SAVE_FLAG      = 'body.trc.tmpl.__no__.PLC_Save'
 TRC_TMPL_PROGRAM_ID     = 'body.trc.tmpl.__no__.program_id'
 
-SQLALCHEMY_DATABASE_URI_PREFIX = 'sqlite:///'
-
 STATION_STATUS_CODES = {
     0: {"result": "UNDEFINED", "desc": "status undefined (not present in database)"},
     1: {"result": "OK", "desc": "Status ok"},

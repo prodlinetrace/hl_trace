@@ -192,14 +192,14 @@
                                     <object class="sizeritem">
                                         <flag>wxALIGN_LEFT|wxALIGN_TOP|wxALL</flag>
                                         <border>5</border>
-                                        <object class="wxStaticText" name="labelMainDBFile">
+                                        <object class="wxStaticText" name="labelMainDBURI">
                                             <label>SQLite DB File</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
                                         <flag>wxALIGN_LEFT|wxALIGN_TOP|wxALL</flag>
                                         <border>5</border>
-                                        <object class="wxStaticText" name="valueMainDBFile">
+                                        <object class="wxStaticText" name="valueMainDBURI">
                                             <label>MyLabel</label>
                                         </object>
                                     </object>

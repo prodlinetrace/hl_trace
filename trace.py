@@ -35,7 +35,7 @@ class MainWindow(wx.App):
         self.valueMainPopups = xrc.XRCCTRL(frame, "valueMainPopups")
         self.valueMainVersion = xrc.XRCCTRL(frame, "valueMainVersion")
         self.valueMainDBModelVersion = xrc.XRCCTRL(frame, "valueMainDBModelVersion")
-        self.valueMainDBFile = xrc.XRCCTRL(frame, "valueMainDBFile")
+        self.valueMainDBURI = xrc.XRCCTRL(frame, "valueMainDBURI")
         self.valueMainUptime = xrc.XRCCTRL(frame, "valueMainUptime")
         self.valueMainDBSize = xrc.XRCCTRL(frame, "valueMainDBSize")
         self.valueMainBaseUrl = xrc.XRCCTRL(frame, "valueMainBaseUrl")
@@ -65,7 +65,7 @@ class MainWindow(wx.App):
         self._opts = self.application._opts
         self._config = parse_config(self._opts.config)
 #        self.webapp = webapp
-        self.dbfile = self._config['main']['dbfile'][0]
+        self.dburi = self._config['main']['dburi'][0]
         self.logfile = self._config['main']['logfile'][0]
         self.starttime = datetime.datetime.now()
         self.baseUrl = 'http://localhost:5000/'
@@ -147,7 +147,7 @@ class MainWindow(wx.App):
             while True:
                 self.valueMainLogFile.SetLabelText(file_name_with_size(self.logfile))
                 self.valueMainConfigFile.SetLabelText(file_name_with_size(self._opts.config))
-                self.valueMainDBFile.SetLabelText(file_name_with_size(self.dbfile))
+                self.valueMainDBURI.SetLabelText(file_name_with_size(self.dburi))
 
                 self.valueMainStatus.SetLabelText(str(self.application.get_status()))
                 self.valueMainUptime.SetLabelText(str(datetime.datetime.now() - self.starttime))
