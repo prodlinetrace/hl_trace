@@ -41,9 +41,9 @@ class PLCBase(object):
         self._pollsleep = 0.1
         self._polldbsleep = 0.01
 
-    def _init_database(self, dbfile='data/prodline.db'):
+    def _init_database(self, dburi=''):
         self.database_engine = Database("{plc}".format(plc=self.get_id()))
-        logger.info("PLC: {plc} connected to SQLite @ {dbfile}. Status: {status}".format(plc=self.get_id(), dbfile=dbfile, status=self.database_engine.get_status()))
+        logger.info("PLC: {plc} connected to SQLite @ {dburi}. Status: {status}".format(plc=self.get_id(), dburi=dburi, status=self.database_engine.get_status()))
 
     def __repr__(self):
         return """<{module}.{name} {me}>""".format(module=self.__class__.__module__, name=self.__class__.__name__, me=str(self))

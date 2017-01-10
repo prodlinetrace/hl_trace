@@ -102,6 +102,9 @@ class ProdLineBase(object):
     def get_db_file(self):
         return self._config['main']['dbfile'][0]
 
+    def get_dburi(self):
+        return self._config['main']['dburi'][0]
+
     def set_plc_class(self, plcClass):
         self.__PLCClass = plcClass
 
@@ -174,7 +177,7 @@ class ProdLineBase(object):
             c.set_name(name)
             c.set_id(iden)
             logger.debug("PLC: {plc} configuring database engine connectivity".format(plc=plc))
-            c._init_database(dbfile=self.get_db_file())
+            c._init_database(self.get_dburi())
             logger.debug("PLC: {plc} set active data blocks to: {dbs}".format(plc=plc, dbs=str(datablocks)))
             c.set_active_datablock_list(datablocks)
             logger.debug("PLC: {plc} is configured now.".format(plc=plc))

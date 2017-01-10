@@ -135,6 +135,7 @@ hidden_imports = [
                 "bleach",
                 "itsdangerous",
                 "werkzeug.http",
+                "pymysql",
 ]
 
 excludes = [    "tkinter",

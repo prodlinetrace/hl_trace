@@ -37,7 +37,7 @@ def parse_config(f):
             c[section][option] = map(str.strip, config.get(section, option).split(','))
 
     # in case program is not installed correctly try create required paths
-    for k in ['dbfile', 'logfile']:
+    for k in ['logfile']:
         path = c['main'][k][0]
         if not os.path.exists(os.path.dirname(path)):  # in case base directory does not exists try to create it
             os.makedirs(os.path.dirname(path))
