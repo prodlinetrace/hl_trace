@@ -15,7 +15,7 @@ class Database(object):
         @sqlalchemy.event.listens_for(db.engine, "connect")
         def set_sqlite_pragma(dbapi_connection, connection_record):
             cursor = dbapi_connection.cursor()
-            cursor.execute("PRAGMA foreign_keys=ON;")
+            #cursor.execute("PRAGMA foreign_keys=ON;")
             cursor.close()
         db.create_all()  # initialize empty database if required.
 
