@@ -40,6 +40,7 @@ class PLCBase(object):
         self._pc_ready_flag_on_poll = False
         self._pollsleep = 0.1
         self._polldbsleep = 0.01
+        self.__database_keepalive_sent = False
 
     def _init_database(self, dburi=''):
         self.database_engine = Database("{plc}".format(plc=self.get_id()))
@@ -283,6 +284,19 @@ class PLCBase(object):
 
     def get_pc_ready_flag_on_poll(self):
         return self._pc_ready_flag_on_poll
+    
+    def send_database_keepalive(self):
+        """
+        Sends some dummy sql query to keepalive database connection. Will be executed once in a minute. 
+        """
+        
+        if datetime.now().second == 20:
+            if self.__database_keepalive_sent == False: 
+                self.database_engine.send_keepalive_query()
+                self.__database_keepalive_sent = True
+                logger.info("PLC: {plc}. Dummy SQL keepalive query sent.".format(plc=self.id))
+        else:
+            self.__database_keepalive_sent = False
 
 
 class PLC(PLCBase):

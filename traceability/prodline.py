@@ -8,6 +8,7 @@ from datetime import datetime
 from time import sleep
 from .helpers import parse_config, parse_args
 from .database import Database
+import sqlalchemy
 
 logger = logging.getLogger(__name__)
 
@@ -343,6 +344,14 @@ class ProdLine(ProdLineBase):
             except snap7.snap7exceptions.Snap7Exception:
                 logger.critical("Connection to {plc} lost. Trying to re-establish connection.".format(plc=plc))
                 plc.connect()
+
+            try:
+                plc.send_database_keepalive()
+            except  sqlalchemy.exc.InvalidRequestError:
+                logger.critical("PLC: {plc} database connection lost. Trying to re-establish connection.".format(plc=plc))
+                plc.database_engine.disconnect()
+                plc.database_engine.connect()
+
 
         return True
 

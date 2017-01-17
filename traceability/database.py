@@ -12,11 +12,11 @@ class Database(object):
     def __init__(self, name="DB connection"):
         # force foreign keys constraints. to check the data integrity.
         self.name = name
-        @sqlalchemy.event.listens_for(db.engine, "connect")
-        def set_sqlite_pragma(dbapi_connection, connection_record):
-            cursor = dbapi_connection.cursor()
-            #cursor.execute("PRAGMA foreign_keys=ON;")
-            cursor.close()
+        #@sqlalchemy.event.listens_for(db.engine, "connect")
+        #def set_sqlite_pragma(dbapi_connection, connection_record):
+        #    cursor = dbapi_connection.cursor()
+        #    #cursor.execute("PRAGMA foreign_keys=ON;")
+        #    cursor.close()
         db.create_all()  # initialize empty database if required.
 
     def read_status(self, product_type, serial_number, station):
@@ -256,13 +256,16 @@ class Database(object):
         return Comment.query.count()
 
     def connect(self):
-        pass
+        logger.info("CON: {dbcon} db.connect initiated.".format(dbcon=self.name))
 
     def disconnect(self):
-        pass
+        logger.info("CON: {dbcon} db.disconnect initiated.".format(dbcon=self.name))
 
     def get_status(self):
         return True
+
+    def send_keepalive_query(self):
+        return db.session.execute(sqlalchemy.text("select 1"))
 
     def initialize_example_data(self):
         db.drop_all()
